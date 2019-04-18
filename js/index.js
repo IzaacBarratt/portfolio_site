@@ -1,8 +1,21 @@
-window.onload = function() {
+let screen_worker = new Worker('js/workers/screen_worker.js');
+let bubble_canvas = new Worker('js/workers/bubble_canvas.js');
+screen_worker.addEventListener('message', collision);
 
-   init();
-    
+ 
+window.onload = function() {
+   initBubbles();
+   initLayoutAnims(); //todo THIS SHOULD SET animations to 0 opacity if thats their config before animating in  
+   window.addEventListener("scroll", windowScroll);
 }
+
+
+
+// Elements-------
+
+var canvasOnScreen = true; // Check if canvas is on screen to even animate
+
+//-----------------
 
 var animationVar;
 var objCount = 15;
@@ -10,6 +23,118 @@ var smallScreenCount = 5;
 var objContainer = [];
 var stageVals = {};
 
+var stopChecking = false; // Check animations have all finished - if so, stop checking to see if any are left
+
+// Stats
+var statsAnimated   = false;
+const statsPre      = 100;
+const statDelay     = 100;
+const statContainer = document.getElementById('statBarContainers'); //.children;
+
+// Profile
+var profileAnimated = false;
+const profilePre    = 0;
+const profileDelay  = 100;
+const profileContainer = document.getElementById('bio_profile');
+
+// Experience
+var experienceAnimated = false;
+const experiencePre   = 100;
+const experienceDelay = 100;
+const experienceContainer = document.getElementById('bio_exp');
+
+// Bio 
+var bioAnimated = false;
+const bioPre = 70;
+const bioDelay = 100;
+const bioContainer = document.getElementById('bio_container');
+
+// Bio Text
+//var bioTextAnimated = false;
+const bioTextCont = document.getElementById('bio_container_content');
+
+//Approach
+var approachAnimated = false;
+const approachPre = 0;
+const approachDelay = 100;
+const approachContainer = document.getElementById('approach_text');
+
+// ----------------
+
+var animCont = [
+    {
+        active: true,
+        cont: statContainer,
+
+    },
+    {
+        active: true,
+        cont: profileContainer,
+        config: {
+            x: -200,
+            y: 0,
+            baseDelay: profilePre,
+            delay: profileDelay,
+            fadeIn: true
+        }
+    },
+    {
+        active: true,
+        cont: experienceContainer,
+        config: {
+            x: 200,
+            y: 0,
+            baseDelay: experiencePre,
+            delay: experienceDelay,
+            offset: 0,
+            fadeIn: true
+        }
+    },
+    /*
+    {
+        active: true,
+        cont: bioContainer,
+        config: {
+            x: 0,
+            y: -60,
+            baseDelay: bioPre,
+            delay: bioDelay,
+            fadeIn: true,
+            offset: 100
+        }
+    },*/
+    
+    {
+        active: true,
+        cont: bioTextCont,
+        config: {
+            x: 0,
+            y: 0,
+            height: [0, 120],
+            baseDelay: bioPre,
+            delay: bioDelay,
+            fadeIn: true,
+            offset: 100
+        }
+    },
+
+    {
+        active: true,
+        cont: approachContainer,
+        config: {
+            x: 100,
+            y: -80,
+            baseDelay: approachPre,
+            delay: approachDelay,
+            fadeIn: true,
+            offset: 200
+        }
+    },
+
+];
+
+
+// Bubble Vars --------------
 const baseMomentum = 1;
 const momentumVal = 4;
 const slowMomentum= 1.1;
@@ -19,8 +144,9 @@ const radiusVals = {
     min: 20
 }
 
-var previous_time = new Date();
 
+
+// Bubble Class + Functions ---------------
 
 class CircleObj {
 
@@ -29,15 +155,11 @@ class CircleObj {
         const radius = Math.random() * (radiusVals.max - radiusVals.min) + radiusVals.min;
         this.selfRadius = radius;
 
-        //console.log(radius)
-        //console.log(radius / 100)
         var opacity = (radius / 100) > 1 ? 1 : radius / 100;
         opacity -= opacitySub;
         if (opacity < 0.1) { opacity = 0.1; }
-        //console.log((radius / 100) - 0.4)
-        console.log(opacity)
 
-        this.momentum = radius / 100 //* (stageVals.w < 600) ? slowMomentum : momentumVal;
+        this.momentum = Math.round(radius / 100) // made int for optimisation, floats can cause extra rendering
         this.primaryObj = new paper.Path.Circle({
             center: [Math.random() * stage_x, Math.random() * stage_y],
             radius: radius
@@ -46,7 +168,6 @@ class CircleObj {
         this.primaryObj.strokeWidth = Math.ceil(radius / 20);
         this.primaryObj.opacity = opacity;
 
-        console.log(this.primaryObj)
     }
 
     step(delta) {
@@ -60,29 +181,76 @@ class CircleObj {
     }
 }
 
+function initBubbles() {		
+
+    var canvas = document.getElementById('canvas')//.transferControlToOffscreen();
+    //canvas = canvas.getContext('2d')
+    //console.log(canvas.getContext('webgl'))
+    //console.log(canvas);
+
+    //var canvas = document.getElementById('canvas');
+
+    /*
+    if (!('transferControlToOffscreen' in canvas)) {
+        throw new Error('webgl in worker unsupported');
+    }
+
+    stageVals.h = canvas.scrollHeight;
+    stageVals.w = canvas.scrollWidth;
+
+    var offscreen = canvas.transferControlToOffscreen();
+    bubble_canvas.postMessage({ stageVals: stageVals });
+    bubble_canvas.postMessage({ canvas: offscreen }, [offscreen]);
+    //bubble_canvas.postMessage({key: 'stageVals', value: stageVals });
+
+
+    animationVar = requestAnimationFrame(animate)
+
+    function animate() {
+        console.log('animation called')
+        bubble_canvas.postMessage({ animate: true });
+        animationVar = requestAnimationFrame(animate);
+    }
+
+    */
+
+    /*
+   const ctx = canvas.getContext('bitmaprenderer');
+   const offscreenCanvas = new OffscreenCanvas(canvas.width, canvas.height);
+   
+   //const worker = new Worker('canvasworker.js');
+   bubble_canvas.postMessage({msg: 'init', canvas: offscreenCanvas}, [offscreenCanvas]);
+   console.log('started')
+   
+   bubble_canvas.addEventListener('message', function(ev) {
+     if(ev.data.msg === 'render') {
+       ctx.transferFromImageBitmap(ev.data.bitmap);
+     }
+   });
+   */
+
+
+   /*
+    stageVals.h = canvas.scrollHeight;
+    stageVals.w = canvas.scrollWidth;
+
+    renderLayer([], [], stageVals.x, stageVals.y)
+   */
 
 
 
-function init() {		
-
-    var canvas = document.getElementById('canvas');
+    //return;
+    
+    
 	// Create an empty project and a view for the canvas:
     paper.setup(canvas);
-    
-    console.log(paper)
-
-    /*    
-    var firstPath = new paper.Path.Circle({
-        center: [80, 100],
-        radius: 35
-    });
-    firstPath.strokeColor = '#ff0000';
-    */
 
     stageVals = {
         w: paper.view.size.width,
         h: paper.view.size.height
-    }
+    };
+    screen_worker.postMessage({key: 'stageVals', value: stageVals });
+
 
     for (var i = 0; i < objCount; i ++) {
 
@@ -95,28 +263,147 @@ function init() {
         )
     }
 
-    animationVar = requestAnimationFrame(animate)
-    console.log(objContainer)
 
+    //animationVar = requestAnimationFrame(animate)
+
+
+    
+
+    
     function animate() {
 
-        var current_time = new Date();
-        var delta_time = current_time - previous_time;
-        previous_time = current_time;
+        if (canvasOnScreen === true) {
 
-        //firstPath.position.x += 10
-        for (var i = 0; i < objContainer.length; i ++) {
-            objContainer[i].step(delta_time);
+            for (var i = 0; i < objContainer.length; i ++) {
+                objContainer[i].step();
+            }
         }
 
         animationVar = requestAnimationFrame(animate)
     }
-
     
     //cancelAnimationFrame(animationVar)
-    //paper.view.draw();
-  }
+}
+
+// ----------
 
 
 
-  
+// Bubbles have 3 layers of depth,
+// move whole canvas as a thing
+// Make bitmaps of circles and then use two images to loop through 
+
+
+function renderLayer(radius, depth, height, width) {
+
+}
+
+
+
+// Layout animation Funcs ----------------------
+
+function initLayoutAnims() {
+
+    var animLog = [];
+
+    for (var i = 0; i < animCont.length; i ++ ) {
+
+        const item = animCont[i];
+
+        if (item.config != undefined) {
+            item.cont.style.opacity = 0;
+            item.cont.style.transform = `translate(${-item.config.x}px, ${-item.config.y}px)`;
+        }
+
+        animLog.push({
+            top: item.cont.getBoundingClientRect().top,
+            config: item.config || {},
+            active: item.active,
+            id: item.cont.id
+        });
+    }
+
+    console.log(animLog)
+    console.log(animLog.length + ' of ' + animCont.length)
+
+    // Logs the items in the worker thread that handles screen animation - this way the scroll can be managed
+    // off the main thread and send back an event when something needs animating
+    screen_worker.postMessage({ key: 'animLog', value: animLog });
+    screen_worker.postMessage({ key: 'window', value: { h: window.innerHeight, w: window.innerWidth } })
+}   
+
+function windowScroll() {
+    //window.lastScrollTime = new Date().getTime()
+    screen_worker.postMessage({ key: 'scroll', value: window.pageYOffset });
+}
+
+function collision(data) {
+
+    const index     = data.data;
+    const item      = animCont[index];
+    const elem      = item.cont;
+    const config    = item.config;
+    
+    console.log('animate: ' + item.id + ' index of: ' + index);
+
+    switch(elem) {
+        case statContainer: animateStats(); break;
+        default: animateInChildren(elem, config);
+    }
+}
+
+
+
+
+
+
+
+// Animation functions ----------
+function animateStats() {
+
+    if (statsAnimated === true) return;
+    statsAnimated = true;
+
+    const elems = statContainer.children;
+
+    for (var i = 0; i < elems.length; i ++) {
+        const item = elems[i];
+        const value = item.dataset.percent;
+
+        anime({
+            targets: item,
+            width: value + '%',
+            delay: statDelay * i,
+            opacity: 1,
+            duration: 1100,
+
+            easing: 'easeInOutExpo',
+            complete: function() {
+              item.innerHTML = value + '%';
+            }
+        });
+    }
+}
+
+function animateInChildren(elem, config) {
+
+    const children = elem.children;
+    elem.style.opacity = 1;
+
+    for (var i = 0; i < children.length; i ++) {
+
+        children[i].style.opacity = 1;
+
+        anime({
+            targets: children[i],
+            translateX: config.x,
+            translateY: config.y,
+            height: config.height,
+            //scaleY: '10%',
+            delay: config.delay * i + config.baseDelay,
+            opacity: (config.fadeIn === true) ? [0, 1] : 1,
+            easing: 'easeInOutExpo'
+        });
+
+    }
+}

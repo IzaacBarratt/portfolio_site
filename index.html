@@ -54,23 +54,23 @@
         
         <div class="topTilt top pinkBackground"></div>
 
-        <div class="profile">
+        <div id="bio_profile" class="profile">
             <div class="profileImage">
                 <img src="img/bio.jpeg" alt="profile_image"/>                
             </div>
+            <div class="outline"></div>
 
-                <div class="profileData">
-                    <h1>Izaac</h1>
-                    <h1 class="bold">Barratt</h1>
-                    <p >Male, 24, Human Person</p>
-                    <!--p>Programming since 14 (approx 10 years ago), easily excitebale.</p-->
-                </div>
+            <div class="profileData">
+                <h1>Izaac</h1>
+                <h1 class="bold">Barratt</h1>
+                <p >Male, 24, Human Person</p>
+                <!--p>Programming since 14 (approx 10 years ago), easily excitebale.</p-->
+            </div>
         </div>
 
         <div class="container">
 
-            
-            <div class="exp">
+            <div id="bio_exp" class="exp">
                 <h1>4</h1>
                 <h4>Years</h4>
                 <h4>Experience</h4>
@@ -93,34 +93,36 @@
                             <label>mySQL</label>
                             <label>SCSS</label>
                         </div>
-                        <div class="col-6 col-sm-8 bars">
-                            <label>100</label>
-                            <label>40</label>
-                            <label>70</label>
-                            <label>90</label>
-                            <label>70</label>
-                            <label>90</label>
+                        <div id="statBarContainers" class="col-6 col-sm-8 bars">
+                            <div data-percent="100"></div>
+                            <div data-percent="40"></div>
+                            <div data-percent="70"></div>
+                            <div data-percent="90"></div>
+                            <div data-percent="70"></div>
+                            <div data-percent="100"></div>
                         </div>
              
                     </div>
                 </div>
             </div>
 
-            <div class="bioContainer container">
+            <div id="bio_container" class="bioContainer container">
                 <div class="shadowContainer">
                 <div class="header">
                     <h4>BIO</h4>
                 </div>
-                <div class="content">
-                    <p>
-                        Originally a back-end developer (servers, databases), but shifted focus to front-end for ease of selling services. 
-                        Since switching I have, to my surprise, found it much more fulfilling. 
-                    </p>
-                    <p>
-                        Working extensively on the back-end-of-the-front-end (optimisation, data delivery, animation scheduling). 
-                        Mostly with React and CommonJS / CSS / HTML. Optimisation and smoothness is the ultimate goal for all my projects. 
-                        If it doesn’t feel like silk - it’s not ready.
-                    </p>
+                <div class="content position-relative">
+                    <div id="bio_container_content" class="overflow-hidden">
+                        <p>
+                            Originally a back-end developer (servers, databases), but shifted focus to front-end for ease of selling services. 
+                            Since switching I have, to my surprise, found it much more fulfilling. 
+                        </p>
+                        <p>
+                            Working extensively on the back-end-of-the-front-end (optimisation, data delivery, animation scheduling). 
+                            Mostly with React and CommonJS / CSS / HTML. Optimisation and smoothness is the ultimate goal for all my projects. 
+                            If it doesn’t feel like silk - it’s not ready.
+                        </p>
+                    </div>
                 </div>
             </div>
             </div>
@@ -153,20 +155,32 @@
                 <div class="shadow"></div>
 
                 <div class="contentContainer">
-                    <div class="content">
+                    <div id="approach_text" class="content">
 
-                        <div class="title"><h1 class="bold nocaps">Passionate</h1><h1 class="nocaps">about</h1></div>
-                        <h1 class="bold">Optimisation</h1>
+                        <div class="title">
+                            <h1 class="bold nocaps">Passionate</h1><h1 class="nocaps">about</h1>
+                        </div>
 
-                        <p>
-                            To me, nothing is better than smooth.
-                        </p>
+                        <div>
+                            <h1 class="bold">Optimisation</h1>
+                        </div>
+                        
+                        <div>
+                            <p>
+                                To me, nothing is better than smooth.
+                            </p>
+                        </div>
 
-                        <p class="bold">
-                            If this website doesn't run smooth as butter- it's not finished yet.
-                        </p>
+                        <div>
+                            <p class="bold">
+                                If this website doesn't run smooth as butter- it's not finished yet.
+                            </p>
+                        </div>
+
                     </div>
+
                 </div>
+                
             </div>
 
             <div class="col-12 order-1 order-sm-12 col-sm-5 col-md-6 bottomimage">
@@ -197,6 +211,7 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.0/paper-core.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.js"></script>
   <script src="js/index.js"></script>
 </body>
 </html>

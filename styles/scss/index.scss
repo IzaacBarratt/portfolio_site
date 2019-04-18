@@ -94,6 +94,9 @@ body {
   margin-bottom: 0px;
 }
 
+.overflow-hidden {
+  overflow: hidden;
+}
 
 
 // REUSEABLE ------
@@ -145,6 +148,9 @@ body {
   background-color: $colorC;
 }
 
+.hidden {
+  opacity: 0;
+}
 
 
 // INTRO -------------------------------
@@ -219,6 +225,7 @@ body {
 
     .bottomTilt {
       position: absolute;
+      top: calc(100% - 1px);
     }
 
     .topTilt {
@@ -228,18 +235,33 @@ body {
 
     .exp {
 
-      //position: absolute;
-      /*
-      background-color: orange;
-      padding: 30px;
-      padding-right: 40px;
-      padding-left: 40px;
-      border-radius: 100%;
-      */
+      @media (min-width: $breaksmall) {
+        padding-top: 40px;
+        margin-bottom: 10vh;
+        display: static;
+      }
 
       @media (min-width: $breakmid) {
-        position: absolute;
-      }     
+        padding-top: 0px;
+        text-align: left;
+      }    
+      
+      @media (min-width: $breaklarge) {
+        left: 15vw;
+      }
+
+      h4 {
+        margin-top: auto;
+        padding-bottom: 10px;
+      }
+
+      //display: flex;
+      //flex-direction: row;
+
+      padding-top: 250px;
+      margin-bottom: 40px;
+      text-align: left;
+
 
       h1 {
         font-weight: bold;
@@ -251,21 +273,39 @@ body {
         margin-bottom: 0px;
       }
 
-      text-align: right;
     }
 
     .profile {
 
       margin-left: auto;
       margin-right: auto;
+      position: absolute;
+      top: -160px;
+      right: -20px;
+      z-index: 100;
 
-      @media (min-width: $breakmid) {
-
-        position: absolute;
-        top: -160px;
+      
+      @media (min-width: $breaksmall) {
         right: 20px;
-        z-index: 100;
       }
+      
+      @media (min-width: $breaklarge) {
+        right: 15vw;
+      }
+
+      /*
+      .outline {
+        position: absolute;
+        top: -25px;
+        right: -25px;
+        border-radius: 50%;
+        width: 350px;
+        height: 350px;
+        background-color: $colorA;
+      
+        clip-path: polygon(0 60%, 0 100%, 100 100, 100 40%);
+        -webkit-clip-path: polygon(0 60%, 0 100%, 100 100, 100 40%);
+      }*/
 
       .profileData {
 
@@ -277,15 +317,8 @@ body {
           width: 200px;
         }
 
-        @media (min-width: $breakmid) {
-          float: right;
-          text-align: right;
-        }
-
-        //float: left;
-       // width: 100%;
-        
-        text-align: center;
+        float: right;
+        text-align: right;
         margin-right: 40px;
       }
 
@@ -333,14 +366,24 @@ body {
         
         label {
           display: block;
+          font-weight: bold;
           text-align: center;
         }
   
         .bars {
+
+          width: 100%;
+          //background-color: orange;
           
-          label {
-            width: 50%;
+          div {
+            width: 0px;
+            //opacity: 0;
+            //padding: 20px;
+            //padding-top: 3px;
+
             background-color: $colorE;
+            margin-bottom: 12px;
+            height: 20px;
             padding-left: 10px;
           }
         }
@@ -373,13 +416,28 @@ body {
       border-top-right-radius: $borderRadius;
       }
 
+      p {
+        color: black;
+      }
+
+      #bio_container_content {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        right: 20px;
+      }
+
       .content {
         padding: 20px;
+        height: calc(130px + 200px);
         background-color: $colorC;
         border-bottom-left-radius: $borderRadius;
         border-bottom-right-radius: $borderRadius;
       }
     }
+
+
+  
     
    background-color: $colorD;
 }
@@ -392,7 +450,6 @@ body {
   position: relative;
   margin-top: 0px;
   padding-top: 0px;
-
 
   
   .topimage {
@@ -512,7 +569,18 @@ body {
         justify-content: center;
         position: relative;
 
-        
+        #approach_text {
+          h1, p {
+            transform: scale(1);
+            transition: all 0.5s;
+          }
+
+          h1:hover, p:hover {
+            position: relative;
+            transform: scale(1.2);
+            transition: all 0.5s;
+          }
+        }
  
         .content {
           margin-top: 30vh;
@@ -530,7 +598,7 @@ body {
         }
       }     
       
-    
+      
 
       .topDip {
         position: absolute;
@@ -545,7 +613,7 @@ body {
         
     }
 
- 
+    
 
   }  
 

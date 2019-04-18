@@ -62,6 +62,10 @@ body .bold {
   margin-bottom: 0px;
 }
 
+.overflow-hidden {
+  overflow: hidden;
+}
+
 .topTilt {
   border: 0px;
   margin: 0px;
@@ -104,6 +108,10 @@ body .bold {
 
 .lilacBackground {
   background-color: #ccd5ff;
+}
+
+.hidden {
+  opacity: 0;
 }
 
 #intro {
@@ -162,25 +170,38 @@ body .bold {
 }
 #bio .bottomTilt {
   position: absolute;
+  top: calc(100% - 1px);
 }
 #bio .topTilt {
   position: absolute;
   top: calc(-20vh + 1px);
 }
 #bio .exp {
-  /*
-  background-color: orange;
-  padding: 30px;
-  padding-right: 40px;
-  padding-left: 40px;
-  border-radius: 100%;
-  */
-  text-align: right;
+  padding-top: 250px;
+  margin-bottom: 40px;
+  text-align: left;
+}
+@media (min-width: 576px) {
+  #bio .exp {
+    padding-top: 40px;
+    margin-bottom: 10vh;
+    display: static;
+  }
 }
 @media (min-width: 768px) {
   #bio .exp {
-    position: absolute;
+    padding-top: 0px;
+    text-align: left;
   }
+}
+@media (min-width: 992px) {
+  #bio .exp {
+    left: 15vw;
+  }
+}
+#bio .exp h4 {
+  margin-top: auto;
+  padding-bottom: 10px;
 }
 #bio .exp h1 {
   font-weight: bold;
@@ -193,17 +214,37 @@ body .bold {
 #bio .profile {
   margin-left: auto;
   margin-right: auto;
-}
-@media (min-width: 768px) {
-  #bio .profile {
+  position: absolute;
+  top: -160px;
+  right: -20px;
+  z-index: 100;
+  /*
+  .outline {
     position: absolute;
-    top: -160px;
+    top: -25px;
+    right: -25px;
+    border-radius: 50%;
+    width: 350px;
+    height: 350px;
+    background-color: $colorA;
+
+    clip-path: polygon(0 60%, 0 100%, 100 100, 100 40%);
+    -webkit-clip-path: polygon(0 60%, 0 100%, 100 100, 100 40%);
+  }*/
+}
+@media (min-width: 576px) {
+  #bio .profile {
     right: 20px;
-    z-index: 100;
+  }
+}
+@media (min-width: 992px) {
+  #bio .profile {
+    right: 15vw;
   }
 }
 #bio .profile .profileData {
-  text-align: center;
+  float: right;
+  text-align: right;
   margin-right: 40px;
 }
 #bio .profile .profileData h1 + h1 {
@@ -211,12 +252,6 @@ body .bold {
 }
 #bio .profile .profileData p {
   width: 200px;
-}
-@media (min-width: 768px) {
-  #bio .profile .profileData {
-    float: right;
-    text-align: right;
-  }
 }
 #bio .profile .profileImage {
   width: 300px;
@@ -252,11 +287,17 @@ body .bold {
 }
 #bio .statContainer .stats label {
   display: block;
+  font-weight: bold;
   text-align: center;
 }
-#bio .statContainer .stats .bars label {
-  width: 50%;
+#bio .statContainer .stats .bars {
+  width: 100%;
+}
+#bio .statContainer .stats .bars div {
+  width: 0px;
   background-color: #c884a6;
+  margin-bottom: 12px;
+  height: 20px;
   padding-left: 10px;
 }
 #bio .statContainer .stats img {
@@ -281,8 +322,18 @@ body .bold {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 }
+#bio .bioContainer p {
+  color: black;
+}
+#bio .bioContainer #bio_container_content {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+}
 #bio .bioContainer .content {
   padding: 20px;
+  height: calc(130px + 200px);
   background-color: #ccd5ff;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
@@ -386,6 +437,15 @@ body .bold {
   flex-direction: row;
   justify-content: center;
   position: relative;
+}
+#approach .bottombackground .contentContainer #approach_text h1, #approach .bottombackground .contentContainer #approach_text p {
+  transform: scale(1);
+  transition: all 0.5s;
+}
+#approach .bottombackground .contentContainer #approach_text h1:hover, #approach .bottombackground .contentContainer #approach_text p:hover {
+  position: relative;
+  transform: scale(1.2);
+  transition: all 0.5s;
 }
 #approach .bottombackground .contentContainer .content {
   margin-top: 30vh;
