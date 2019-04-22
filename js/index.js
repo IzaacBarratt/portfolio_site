@@ -4,7 +4,7 @@ screen_worker.addEventListener('message', collision);
 
  
 window.onload = function() {
-   initBubbles();
+   //initBubbles();
    initLayoutAnims(); //todo THIS SHOULD SET animations to 0 opacity if thats their config before animating in  
    window.addEventListener("scroll", windowScroll);
 }
@@ -184,6 +184,10 @@ class CircleObj {
 function initBubbles() {		
 
     var canvas = document.getElementById('canvas')//.transferControlToOffscreen();
+    //var canvasB= document.getElementById('canvasB')
+    //var canvasC= document.getElementById('canvasC')
+
+
     //canvas = canvas.getContext('2d')
     //console.log(canvas.getContext('webgl'))
     //console.log(canvas);
@@ -249,9 +253,60 @@ function initBubbles() {
         w: paper.view.size.width,
         h: paper.view.size.height
     };
-    screen_worker.postMessage({key: 'stageVals', value: stageVals });
+    //screen_worker.postMessage({key: 'stageVals', value: stageVals });
 
 
+    const layerAllocation = objCount / 3;
+
+    var canvases = [
+        canvas,
+        //canvasB,
+        //canvasC
+    ]
+
+
+    for (var i = 0; i < 3; i ++) {
+        for (var j = 0; j < layerAllocation; j ++) {
+
+            const canv = canvases[i];
+            //var ctx = canv.getContext();
+
+            objContainer.push(
+                new CircleObj(paper.view.size.width, paper.view.size.height)
+            )
+
+            // create bitmap of circles on the canvas - probalby duplicate it too, so that can be back to back
+            // animate entire bitmaps move one way
+
+        }
+    }
+
+
+    /*
+    var imageData = context.getImageData(1, 0, context.canvas.width-1, context.canvas.height);
+    context.putImageData(imageData, 0, 0);
+    // now clear the right-most pixels:
+    context.clearRect(context.canvas.width-1, 0, 1, context.canvas.height);
+    */
+
+    animationVar = requestAnimationFrame(animateLeft);
+
+
+    function animateLeft() {
+
+        var context = canvas.getContext('2d');
+
+        var imageData = context.getImageData(1, 0, context.canvas.width-1, context.canvas.height);
+        context.putImageData(imageData, 0, 0);
+        // now clear the right-most pixels:
+        context.clearRect(context.canvas.width-1, 0, 1, context.canvas.height);
+        
+        
+        animationVar = requestAnimationFrame(animateLeft);
+    }
+
+
+    /*
     for (var i = 0; i < objCount; i ++) {
 
         if (stageVals.w < 600 && i > smallScreenCount) {
@@ -259,15 +314,16 @@ function initBubbles() {
         }
 
         objContainer.push(
-            new CircleObj(paper.view.size.width, paper.view.size.height)
+            //new CircleObj(paper.view.size.width, paper.view.size.height)
+
         )
-    }
+    }*/
 
 
     //animationVar = requestAnimationFrame(animate)
 
 
-    
+
 
     
     function animate() {
